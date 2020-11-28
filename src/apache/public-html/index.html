@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="styles.css">
+		<script type="text/javascript" src="main.js"></script>
+		<title>Login System</title>
+	</head>
+
+	<body>
+		<div id="wrapper">
+			<div id="div1">
+				<form action="./index.php" method="POST">
+					<b>Create Account</b>
+					<p>Username:
+						<input type="text" name="uname" size="30"/>
+					</p>
+					<p>Password:
+						<input type="text" name="password" size="30"/>
+					</p>
+					<button type="submit" name="create_account">Create</button>
+					<button type="button" onclick="randomVal();">Random</button>
+				</form>
+			</div>
+			<div id="div2">
+				<form action="./index.php" method="POST">
+					<b>Log In</b>
+					<p>Username:
+						<input type="text" name="uname" size="30"/>
+					</p>
+					<p>Password:
+						<input type="text" name="password" size="30"/>
+					</p>
+					<button type="submit" name="create_account">Log In</button>
+				</form>
+			</div>
+			<div id="div3"></div>
+		</div>
+	</body>
+</html>
+

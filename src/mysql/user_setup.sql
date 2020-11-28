@@ -1,0 +1,18 @@
+CREATE DATABASE IF NOT EXISTS USERDATA;
+
+USE USERDATA;
+
+GRANT ALL ON USERDATA.* TO 'user'@'%';
+
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users (
+	ukey INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	uname VARCHAR(30) NOT NULL,
+	upass VARCHAR(30) NOT NULL,
+	ctime DATETIME NOT NULL
+);
+
+INSERT INTO users (uname, upass, ctime) VALUES
+    ("brendan", "brendan", CURTIME());
+
