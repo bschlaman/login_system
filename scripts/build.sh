@@ -45,6 +45,12 @@ function connect_mysql(){
 	    --net net1 mysql \
 	    mysql -hmysql_running -uuser -p
 }
+function select_star_users(){
+	docker run --rm -it \
+	    --net net1 mysql \
+	    mysql -hmysql_running -uuser -p \
+			-e "select * from USERDATA.users;"
+}
 function create_network(){
 	docker network create net1
 }
@@ -67,6 +73,7 @@ function main(){
 		run_apache \
 		run_mysql \
 		connect_mysql \
+		select_star_users \
 		create_network \
 		provision_certs \
 		"build all" \
@@ -94,6 +101,9 @@ function main(){
 			break;;
 		connect_mysql )
 			connect_mysql
+			break;;
+		select_star_users )
+			select_star_users
 			break;;
 		create_network )
 			create_network
