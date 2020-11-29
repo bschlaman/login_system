@@ -9,21 +9,28 @@ function build_php(){
 	docker build -t php-app -f $ROOT/docker/php.dockerfile $ROOT
 }
 function build_apache(){
-	docker build -t apache-app -f $ROOT/docker/apache.dockerfile $ROOT
+	read -p "Enter domain name: " domain
+	[ $(wc -w <<< "$domain") -ne 1 ] && echo "Error: Need a domain" && exit 1
+	docker build -t apache-app \
+		--build-arg "domain=$domain" \
+		-f $ROOT/docker/apache.dockerfile $ROOT
 }
 function build_mysql(){
 	docker build -t mysql-app -f $ROOT/docker/mysql.dockerfile $ROOT
 }
 function run_php(){
 	docker run --rm -dit \
-	    -v $(pwd)/test/php:/var/www/html/ \
+	    -v $ROOT/src/php:/var/www/html/ \
 	    --net net1 \
 	    --name php_running php-app
 }
 function run_apache(){
 	docker run --rm -dit \
-	    -p 8080:80 \
-	    -v $(pwd)/test/apache/public-html:/var/www/html/ \
+	    -p 80:80 \
+	    -p 443:443 \
+	    -v $ROOT/src/apache/public-html:/var/www/html/ \
+	    -v $ROOT/src/apache/logs:/var/log/apache2/ \
+	    -v $ROOT/src/apache/letsencrypt:/etc/letsencrypt/live/site/ \
 	    --net net1 \
 	    --name apache_running apache-app
 }
@@ -41,6 +48,13 @@ function connect_mysql(){
 function create_network(){
 	docker network create net1
 }
+function provision_certs(){
+	docker run -it --rm --name certbot \
+	  -p 80:80 \
+		-v $ROOT/letsencrypt:/etc/letsencrypt \
+		-v $ROOT/letsencrypt/lib:/var/lib/letsencrypt \
+		certbot/certbot certonly --register-unsafely-without-email
+}
 
 function main(){
 	PS3="What would you like to do?"$'\n'" -> "
@@ -54,6 +68,7 @@ function main(){
 		run_mysql \
 		connect_mysql \
 		create_network \
+		provision_certs \
 		"build all" \
 		"run all" \
 		"stop all"
@@ -82,6 +97,9 @@ function main(){
 			break;;
 		create_network )
 			create_network
+			break;;
+		provision_certs )
+			provision_certs
 			break;;
 		"build all" )
 			build_php
