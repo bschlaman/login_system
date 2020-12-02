@@ -1,71 +1,71 @@
 <?php
 
-echo "Start of PHP script<br>";
-echo shell_exec("whoami") . "<br>";
-echo shell_exec("ls -ld /var/www/html") . "<br>";
-
-// Messing with logging
-$fp = fopen("./logs/output.txt", "a");
-fwrite($fp, date("h:i:sa") . "\n");
-fclose($fp);
-
-// Printing out API params
-foreach($_POST as $key => $value) {
-	echo "The HTML name: $key <br>";
-	echo "The content of it: $value <br>";
+function logger($msg){
+	$fp = fopen("./logs/output.txt", "a");
+	fwrite($fp, $msg);
+	fclose($fp);
+}
+function log_start(){
+	$msg = "";
+	$msg = $msg . "[ " . date("h:i:sa") . " ]" . ": Create account" . "\n";
+	$msg = $msg . "uname: " . $_POST["uname"] . "\n";
+	$msg = $msg . "upass: " . $_POST["upass"] . "\n";
+	logger($msg);
+}
+function log_end(){
+	$msg = "===END===\n";
+	logger($msg);
 }
 
-if(isset($_POST["create_account"])){
-	echo "Inside isset <br>";
+function html_debug(){
+	// Printing out API params
+	$msg = "";
+	foreach($_POST as $key => $value) {
+		$msg = $msg . "The HTML name: $key \n";
+		$msg = $msg . "The content of it: $value \n";
+	}
+	logger($msg);
+}
 
+function check_valid(){
+	$valid = true;
+	// check that data comes from create_account form
+	$valid = isset($_POST["create_account"]);
+	// check for missing data
 	$data_missing = array();
+	if(empty($_POST["uname"])){ array_push($data_missing, "uname");	}
+	if(empty($_POST["upass"])){ array_push($data_missing, "upass"); }
+	$valid = empty($data_missing);
 
-	if(empty($_POST["uname"])){
-		$data_missing[] = "uname";
-	} else {
-		$uname = trim($_POST["uname"]);
-	}
-	if(empty($_POST["password"])){
-		$data_missing[] = "password";
-	}	else {
-		$upass = trim($_POST["password"]);
-	}
-
-	if(empty($data_missing)){
-		require_once("./connection.php");
-		$insert_statement = "INSERT INTO users (uname, upass, ctime) VALUES";
-		$values = "(\"" . $uname . "\", \"" . $upass . "\", CURTIME())";
-		$query = $insert_statement . $values;
-		
-		$result = mysqli_query($conn, $query);
-		mysqli_close($conn);
-
-		echo "Result: " . $result;
-
-	} else {
-		echo "Missing:<br/>";
-		foreach($data_missing as $missing){
-			echo $missing . "<br/>";
-		}
-	}
-
+	return $valid;
 }
-// require_once("./connection.php");
-// $select_statement = "INSERT";
-// $query = $select_statement;
-// 
-// header('Content-type:application/json;charset=utf-8');
-// $result = mysqli_query($conn, $query);
-// if (mysqli_num_rows($result) > 0) {
-// 	// output data of each row
-// 	$data = array();
-// 	while($row = mysqli_fetch_assoc($result)) {
-// 		// array_push($data, [$row["ukey"] => ["name" => $row["uname"], "pass" => $row["upass"]]]);
-// 		array_push($data, ["id" => $row["ukey"], "name" => $row["uname"], "pass" => $row["upass"]]);
-// 	}
-// 	echo json_encode($data);
-// } else {
-// 	echo "0 results";
-// }
-// 
-// mysqli_close($conn);
+
+function enter_user($uname, $upass){
+	require_once("./connection.php");
+	// build the query
+	$insert_statement = "INSERT INTO users (uname, upass, ctime) VALUES";
+	$values = "(\"" . $uname . "\", \"" . $upass . "\", CURTIME())";
+	$query = $insert_statement . $values;
+	
+	$result = mysqli_query($conn, $query);
+	mysqli_close($conn);
+
+	return $result;
+}
+
+function main(){
+	log_start();
+	$valid = check_valid();
+	if($valid){
+		$uname = $_POST["uname"];
+		$upass = $_POST["upass"];
+		$result = enter_user($uname, $upass);
+		logger("Inserted: $result \n");
+	} else { logger("ERROR: invalid request\n"); }
+	if($result == 1){
+		echo "Your account has been created.<br>";
+		echo "Welcome, " . $uname . ".<br>";
+	} else { logger("ERROR: db update failed\n"); }
+	log_end();
+}
+main();

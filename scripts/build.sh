@@ -56,7 +56,7 @@ function create_network(){
 }
 function provision_certs(){
 	docker run -it --rm --name certbot \
-	  -p 80:80 \
+		-p 80:80 \
 		-v $ROOT/letsencrypt:/etc/letsencrypt \
 		-v $ROOT/letsencrypt/lib:/var/lib/letsencrypt \
 		certbot/certbot certonly --register-unsafely-without-email
