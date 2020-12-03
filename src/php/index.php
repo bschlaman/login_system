@@ -68,4 +68,60 @@ function main(){
 	} else { logger("ERROR: db update failed\n"); }
 	log_end();
 }
-main();
+function test(){
+	foreach($_SERVER as $key => $value) {
+		echo "The HTML name: $key <br>";
+		echo "The content of it: $value <br>";
+	}
+}
+#main();
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
+	<script type="text/javascript" src="main.js"></script>
+	<link rel="icon" type="image/png" href="favicon.svg"/>
+	<title>Login System</title>
+</head>
+
+<body>
+	<div id="wrapper">
+		<div id="div1">
+			<h2>Sign Up</h2>
+			<p>Please fill this form to create an account.</p>
+			<form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
+				<b>Create Account</b>
+				<p>Username:
+					<input type="text" name="uname" size="30"/>
+				</p>
+				<p>Password:
+					<input type="text" name="upass" size="30"/>
+				</p>
+				<button type="submit" name="create_account">Create</button>
+				<button type="button" onclick="randomVal();">Random</button>
+			</form>
+			<form action="./get_users.php" method="GET">
+				<button type="submit" name="show_users">Show Users</button>
+			</form>
+		</div>
+		<div id="div2">
+			<form action="./login.php" method="POST">
+				<b>Log In</b>
+				<p>Username:
+					<input type="text" name="uname" size="30"/>
+				</p>
+				<p>Password:
+					<input type="text" name="upass" size="30"/>
+				</p>
+				<button type="submit" name="login">Log In</button>
+			</form>
+		</div>
+		<div id="div3"></div>
+	</div>
+</body>
+</html>
+

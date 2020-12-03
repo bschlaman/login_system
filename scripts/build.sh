@@ -51,6 +51,9 @@ function select_star_users(){
 	    mysql -hmysql_running -uuser -p \
 			-e "select * from USERDATA.users;"
 }
+function restart_apache(){
+	docker restart apache_running
+}
 function create_network(){
 	docker network create net1
 }
@@ -74,6 +77,7 @@ function main(){
 		run_mysql \
 		connect_mysql \
 		select_star_users \
+		restart_apache \
 		create_network \
 		provision_certs \
 		"build all" \
@@ -104,6 +108,9 @@ function main(){
 			break;;
 		select_star_users )
 			select_star_users
+			break;;
+		restart_apache )
+			restart_apache
 			break;;
 		create_network )
 			create_network
