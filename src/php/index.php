@@ -30,17 +30,19 @@ function html_debug(){
 function check_valid(){
 	$valid = true;
 	// check that data comes from create_account form
-	$valid = isset($_POST["create_account"]);
+	$valid = $valid && isset($_POST["create_account"]);
+	// check that method is post
+	$valid = $valid && ($_SERVER["REQUEST_METHOD"] == "POST");
 	// check for missing data
 	$data_missing = array();
 	if(empty($_POST["uname"])){ array_push($data_missing, "uname");	}
 	if(empty($_POST["upass"])){ array_push($data_missing, "upass"); }
-	$valid = empty($data_missing);
+	$valid = $valid && empty($data_missing);
 
 	return $valid;
 }
 
-function enter_user($uname, $upass){
+function create_user($uname, $upass){
 	require_once("./connection.php");
 	// build the query
 	$insert_statement = "INSERT INTO users (uname, upass, ctime) VALUES";
@@ -55,11 +57,13 @@ function enter_user($uname, $upass){
 
 function main(){
 	log_start();
+	$username = $password = "";
+	$username_err = $password_err = "";
 	$valid = check_valid();
 	if($valid){
-		$uname = $_POST["uname"];
-		$upass = $_POST["upass"];
-		$result = enter_user($uname, $upass);
+		$uname = trim($_POST["uname"]);
+		$upass = trim($_POST["upass"]);
+		$result = create_user($uname, $upass);
 		logger("Inserted: $result \n");
 	} else { logger("ERROR: invalid request\n"); }
 	if($result == 1){
@@ -74,7 +78,7 @@ function test(){
 		echo "The content of it: $value <br>";
 	}
 }
-#main();
+main();
 ?>
 
 <!DOCTYPE html>
