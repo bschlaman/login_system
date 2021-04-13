@@ -2,8 +2,8 @@
 
 // logging functions
 function bslog($msg){
-	$fp = fopen("./logs/output.txt", "a");
-	$msg = "[ " . date("h:i:sa") . " ]" . $msg;
+	$fp = fopen("./logs/output.log", "a") or die("ERROR: cant write to logs");
+	$msg = "[ " . date("h:i:sa") . " ] " . $msg . "\n";
 	fwrite($fp, $msg);
 	fclose($fp);
 }
@@ -12,25 +12,26 @@ function request_debug(){
 	// log request params
 	$msg = "";
 	foreach($_POST as $key => $value){
-		$msg = $msg . "POST param key: $key \n";
+		$msg = $msg . "POST param key: $key ";
 		$msg = $msg . "value: $value \n";
 	}
 	foreach($_GET as $key => $value){
-		$msg = $msg . "GET param key: $key \n";
+		$msg = $msg . "GET param key: $key ";
 		$msg = $msg . "value: $value \n";
 	}
 	bslog($msg);
 }
 
-function check_valid_request($method, $form_name, $required_params){
+function check_valid_request($method, $submit_name, $required_params){
 	$valid = true;
 	// check method
 	$valid = $valid && ($_SERVER["REQUEST_METHOD"] == strtoupper($method));
-	// check form
-	$valid = $valid && isset($_POST[$form_name]);
+	$method_placeholder = $_SERVER["REQUEST_METHOD"] == "POST" ? $_POST : $_GET;
+	// check submit
+	$valid = $valid && isset($method_placeholder[$submit_name]);
 	// check required params
 	foreach($required_params as $param){
-		$valid = $valid && isset($_POST[$param]);
+		$valid = $valid && isset($method_placeholder[$param]);
 	}
 	return $valid;
 }
