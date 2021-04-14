@@ -105,11 +105,11 @@ main();
 				<p>Password:
 					<input type="text" name="upass" size="30"/>
 				</p>
-				<button type="submit" name="create_account">Create</button>
-				<button type="button" onclick="randomVal();">Random</button>
+				<button type="submit" class="btn btn-primary" name="create_account">Create</button>
+				<button type="button" class="btn btn-primary" onclick="randomVal();">Random</button>
 			</form>
 			<form action="./get_users.php" method="GET">
-				<button type="submit" name="show_users">Show Users</button>
+				<button type="submit" class="btn btn-primary" name="show_users">Show Users</button>
 			</form>
 		</div>
 		<div id="div2">
@@ -121,7 +121,7 @@ main();
 				<p>Password:
 					<input type="text" name="upass" size="30"/>
 				</p>
-				<button type="submit" name="login">Log In</button>
+				<button type="submit" class="btn btn-success" name="login">Log In</button>
 			</form>
 		</div>
 		<div id="div3"></div>

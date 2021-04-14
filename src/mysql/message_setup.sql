@@ -16,6 +16,6 @@ CREATE TABLE messages (
 	sender_email VARCHAR(30) NOT NULL,
 );
 
-INSERT INTO messages (sender_fname, sender_lname, sender_email, msg_subject, msg_message, msg_datetime) VALUES
-    ("Brendan", "S", "brendans@brendan.com", "Greetings", "Greetings from the message box", CURTIME());
+INSERT INTO messages (msg_datetime, msg_subject, msg_message, sender_fname, sender_lname, sender_email) VALUES
+    (CURTIME(), "Greetings", "Greetings from the message box", "Brendan", "S", "brendans@brendan.com");
 
