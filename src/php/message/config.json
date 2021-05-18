@@ -2,5 +2,5 @@
 	"host": "mysql_running",
 	"user": "user",
 	"pass": "pass",
-	"db": "USERDATA"
+	"db": "MESSAGEDATA"
 }

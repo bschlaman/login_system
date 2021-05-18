@@ -51,6 +51,12 @@ function select_star_users(){
 	    mysql -hmysql_running -uuser -p \
 			-e "select * from USERDATA.users;"
 }
+function select_star_messages(){
+	docker run --rm -it \
+	    --net net1 mysql \
+	    mysql -hmysql_running -uuser -p \
+			-e "select * from MESSAGEDATA.messages;"
+}
 function restart_apache(){
 	docker restart apache_running
 }
@@ -77,6 +83,7 @@ function main(){
 		run_mysql \
 		connect_mysql \
 		select_star_users \
+		select_star_messages \
 		restart_apache \
 		create_network \
 		provision_certs \
@@ -109,6 +116,9 @@ function main(){
 		select_star_users )
 			select_star_users
 			break;;
+		select_star_messages )
+			select_star_messages
+			break;;
 		restart_apache )
 			restart_apache
 			break;;
@@ -135,6 +145,4 @@ function main(){
 	done
 }
 main
-
-
 
